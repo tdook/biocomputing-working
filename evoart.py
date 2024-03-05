@@ -11,8 +11,8 @@ from PIL import Image, ImageDraw
 from evol import Population, Evolution
 
 
-SIDES = 3
-POLYGON_COUNT = 100
+SIDES = 4
+POLYGON_COUNT = 1
 
 MAX = 255 * 200 * 200
 TARGET = Image.open("6a.png")
@@ -27,18 +27,26 @@ def evaluate(solution):
     return (MAX - count) / MAX
 
 def make_polygon():
+
   r = random.randrange(0,256)
   g = random.randrange(0,256)
   b = random.randrange(0,256)
   a = random.randrange(30,60)
-  x1 = random.randrange(11,189)
-  y1 = random.randrange(11,189)
+
+  x1 = random.randrange(11, 189)
+  y1 = random.randrange(11, 189)
   x2 = random.randrange(11, 189)
   y2 = random.randrange(11, 189)
   x3 = random.randrange(11, 189)
   y3 = random.randrange(11, 189)
+  x4 = random.randrange(11, 189)
+  y4 = random.randrange(11, 189)
 
-  return[(r,g,b,a),(x1,y1), (x2,y2), (x3,y3)]
+
+
+  return[(r,g,b,a)]+ coords
+  #return[(r,g,b,a),(x1,y1), (x2,y2), (x3,y3),(x4,y4) ]
+
 
 
 def initialise():
@@ -96,6 +104,8 @@ def draw(solution):
 
 
 
+coords = [(random.randrange(11,189),random.randrange(11,189)) for _ in range (SIDES)]
+print (coords)
 
 
 population = Population.generate(initialise, evaluate, size=10, maximize=True)
