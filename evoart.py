@@ -11,8 +11,8 @@ from PIL import Image, ImageDraw
 from evol import Population, Evolution
 
 
-SIDES = 4
-POLYGON_COUNT = 1
+SIDES = 3
+POLYGON_COUNT = 100
 
 MAX = 255 * 200 * 200
 TARGET = Image.open("6a.png")
@@ -42,7 +42,8 @@ def make_polygon():
   x4 = random.randrange(11, 189)
   y4 = random.randrange(11, 189)
 
-
+  coords = [(random.randrange(11,189),random.randrange(11,189)) for _ in range (SIDES)]
+  #print (coords)
 
   return[(r,g,b,a)]+ coords
   #return[(r,g,b,a),(x1,y1), (x2,y2), (x3,y3),(x4,y4) ]
@@ -56,25 +57,24 @@ def initialise():
 
 
 def evolve(population, args):
-  print("evolving")
-
-  mutate(solution="solution.png",rate=0.1)
-  print("mutating")
-  if(population.current_best):
-    mutate()
-    draw(population.current_best.chromosome).save("solution.png")
-
-  exit()
+    population.survive(fraction=0.5)
+    population.breed(parent_picker=select, combiner=combine)
+    population.mutate(mutate_function=mutate, rate=0.1)
+    print("evolved")
+    return population
 
 
 def select(population):
+  #print("selected")
   return [random.choice(population) for i in range(2)]
 
 
 def combine(*parents):
+  #print("combined")
   return [a if random.random() < 0.5 else b for a, b in zip(*parents)]
 
 def mutate(solution, rate):
+  print("mutating from evolving")
   solution = list(solution)
 
   if random.random() < 0.5:
@@ -104,10 +104,28 @@ def draw(solution):
 
 
 
-coords = [(random.randrange(11,189),random.randrange(11,189)) for _ in range (SIDES)]
-print (coords)
+
+
+def pick_parents(population):
+  a = random.choice(population)
+  b = random.choice(population)
+
+  return a,b
+
+
 
 
 population = Population.generate(initialise, evaluate, size=10, maximize=True)
+#population.mutate(mutate_function=mutate, rate=0.1)
+
+evolution1 = (Evolution().survive(fraction=0.5)
+             .breed(parent_picker=select, combiner=combine)
+             .mutate(mutate_function=mutate, rate=0.1)
+             .evaluate())
+#population.evolve(population,n=1)
+#population.survive(fraction=0.5).breed(parent_picker=select, combiner=combine)
+population.evolve(evolution1,n=1)
+
 draw(population[0].chromosome).save("solution.png")
+#draw(evolution[0].chromosome).save("solution.png")
 
