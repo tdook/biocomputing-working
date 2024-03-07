@@ -6,6 +6,7 @@ Genetic algorithm implemented with Evol solving the one max problem
 """
 import random
 
+import evol
 from PIL import ImageChops
 from PIL import Image, ImageDraw
 from evol import Population, Evolution
@@ -60,8 +61,21 @@ def evolve(population, args):
     population.survive(fraction=0.5)
     population.breed(parent_picker=select, combiner=combine)
     population.mutate(mutate_function=mutate, rate=0.1)
-    print("evolved")
+   # print("evolved")
     return population
+    #exit()
+
+
+# def replace(individual, population, cxp=0.5, mutp=0.5, ):
+#     p = random.random()
+#     if p < cxp:
+#         offspring = evol.utils.offspring_generator(
+#             population.individuals, parent_picker=select, combiner=combine)
+#         return next(offspring)
+#     if cxp < p < cxp + mutp:
+#         return individual.mutate(mutate_function=mutate, probability=0.1)
+#     if cxp + mutp < p:
+#         return individual
 
 
 def select(population):
@@ -74,7 +88,7 @@ def combine(*parents):
   return [a if random.random() < 0.5 else b for a, b in zip(*parents)]
 
 def mutate(solution, rate):
-  print("mutating from evolving")
+  #print("mutating from evolving")
   solution = list(solution)
 
   if random.random() < 0.5:
@@ -106,26 +120,24 @@ def draw(solution):
 
 
 
-def pick_parents(population):
-  a = random.choice(population)
-  b = random.choice(population)
 
-  return a,b
-
-
-
-
-population = Population.generate(initialise, evaluate, size=10, maximize=True)
+#population = Population.generate(initialise, evaluate, size=10, maximize=True)
 #population.mutate(mutate_function=mutate, rate=0.1)
 
-evolution1 = (Evolution().survive(fraction=0.5)
-             .breed(parent_picker=select, combiner=combine)
-             .mutate(mutate_function=mutate, rate=0.1)
-             .evaluate())
+#evolution1 = (Evolution().survive(fraction=0.5)
+          ##   .breed(parent_picker=select, combiner=combine)
+         #    .mutate(mutate_function=mutate, rate=0.1)
+         #    .evaluate())
 #population.evolve(population,n=1)
 #population.survive(fraction=0.5).breed(parent_picker=select, combiner=combine)
-population.evolve(evolution1,n=1)
+#population.evolve(evolution1,n=1)
 
-draw(population[0].chromosome).save("solution.png")
+'''mew = size of population, lamda is size of offspring
+'''
+#population.breed()
+#population.map(replace, parents=population.individuals, cxp=0.7, mutp=0.2)
+#population.survive(.mutate(mutate_function=mutate(),probability=0.1),)
+
+#draw(population[0].chromosome).save("solution.png")
 #draw(evolution[0].chromosome).save("solution.png")
 
