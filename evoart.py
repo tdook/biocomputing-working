@@ -12,7 +12,7 @@ from PIL import Image, ImageDraw
 from evol import Population, Evolution
 
 
-SIDES = 3
+SIDES = 4
 POLYGON_COUNT = 100
 
 MAX = 255 * 200 * 200
@@ -57,25 +57,27 @@ def initialise():
 
 
 
-def evolve(population, args):
+def evolve(population, args, cxp=0.5, mutp=0.5):
     population.survive(fraction=0.5)
     population.breed(parent_picker=select, combiner=combine)
-    population.mutate(mutate_function=mutate, rate=0.1)
+    population.mutate(mutate_function=mutate, rate=0.3)
+    #population.individuals = [replace(ind, population, cxp,mutp) for ind in population.individuals]
    # print("evolved")
     return population
     #exit()
 
 
 # def replace(individual, population, cxp=0.5, mutp=0.5, ):
-#     p = random.random()
-#     if p < cxp:
-#         offspring = evol.utils.offspring_generator(
-#             population.individuals, parent_picker=select, combiner=combine)
-#         return next(offspring)
-#     if cxp < p < cxp + mutp:
-#         return individual.mutate(mutate_function=mutate, probability=0.1)
-#     if cxp + mutp < p:
-#         return individual
+#      print("replaced----------------")
+#      p = random.random()
+#      if p < cxp:
+#          offspring = evol.utils.offspring_generator(
+#              population.individuals, parent_picker=select, combiner=combine)
+#          return next(offspring)
+#      if cxp < p < cxp + mutp:
+#          return individual.mutate(mutate_function=mutate, probability=0.1)
+#      if cxp + mutp < p:
+#          return individual
 
 
 def select(population):
@@ -88,7 +90,7 @@ def combine(*parents):
   return [a if random.random() < 0.5 else b for a, b in zip(*parents)]
 
 def mutate(solution, rate):
-  #print("mutating from evolving")
+  #print("mutating")
   solution = list(solution)
 
   if random.random() < 0.5:
@@ -101,6 +103,19 @@ def mutate(solution, rate):
     coords = [max(0, min(int(x), 200)) for x in coords]
     polygon[1:] = list(zip(coords[::2], coords[1::2]))
     solution[i] = polygon
+
+  if random.random() < 0.5:
+      i = random.randrange(len(solution))
+      polygon = list(solution[i])
+      colors = [x for color in polygon[1:] for x in color]
+      colors = [x if random.random() > rate else
+                x + random.normalvariate(0,10) for x in colors]
+      colors = [max(0, min(int(x), 255)) for x in colors]
+      polygon[1:] = list(zip(colors[::2], colors[1::2]))
+      solution[i] = polygon
+
+  #if random.random() < 0.2:
+   #   for _ in range(random.randint(1, len(solution) // 2)):
   else:
     # reorder polygons
     random.shuffle(solution)
