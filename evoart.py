@@ -12,7 +12,7 @@ from PIL import Image, ImageDraw
 from evol import Population, Evolution
 
 
-SIDES = 4
+SIDES = 3
 POLYGON_COUNT = 100
 
 MAX = 255 * 200 * 200
@@ -89,6 +89,10 @@ def combine(*parents):
   #print("combined")
   return [a if random.random() < 0.5 else b for a, b in zip(*parents)]
 
+
+
+
+
 def mutate(solution, rate):
   #print("mutating")
   solution = list(solution)
@@ -104,7 +108,7 @@ def mutate(solution, rate):
     polygon[1:] = list(zip(coords[::2], coords[1::2]))
     solution[i] = polygon
 
-  if random.random() < 0.5:
+  if random.random() < 0.2:
       i = random.randrange(len(solution))
       polygon = list(solution[i])
       colors = [x for color in polygon[1:] for x in color]
@@ -114,7 +118,10 @@ def mutate(solution, rate):
       polygon[1:] = list(zip(colors[::2], colors[1::2]))
       solution[i] = polygon
 
-  #if random.random() < 0.2:
+
+
+
+#if random.random() < 0.2:
    #   for _ in range(random.randint(1, len(solution) // 2)):
   else:
     # reorder polygons
