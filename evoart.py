@@ -61,10 +61,9 @@ def evolve(population, args, cxp=0.5, mutp=0.5):
     population.survive(fraction=0.5)
     population.breed(parent_picker=select, combiner=combine)
     population.mutate(mutate_function=mutate, rate=0.3)
-    #population.individuals = [replace(ind, population, cxp,mutp) for ind in population.individuals]
-   # print("evolved")
+
     return population
-    #exit()
+
 
 
 # def replace(individual, population, cxp=0.5, mutp=0.5, ):
@@ -81,13 +80,24 @@ def evolve(population, args, cxp=0.5, mutp=0.5):
 
 
 def select(population):
-  #print("selected")
-  return [random.choice(population) for i in range(2)]
+
+   # solution = list(solution)
+  #  pop_list = list(solution.survive(fraction=0.5))
+
+    '''tournament selection needed'''
+
+    return [random.choice(population) for i in range(2)]
+
+
+#def tournament(population):
+    #parent_pop
 
 
 def combine(*parents):
   #print("combined")
   return [a if random.random() < 0.5 else b for a, b in zip(*parents)]
+
+#tournamnet and elitist selection
 
 
 
@@ -117,6 +127,9 @@ def mutate(solution, rate):
       colors = [max(0, min(int(x), 255)) for x in colors]
       polygon[1:] = list(zip(colors[::2], colors[1::2]))
       solution[i] = polygon
+
+
+  #polygon = list(solution[i])
 
 
 
