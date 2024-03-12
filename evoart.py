@@ -62,8 +62,8 @@ def initialise():
 def evolve(population, args, cxp=0.5, mutp=0.5):
     population.survive(fraction=0.5)
     population.breed(parent_picker=select, combiner=combine)
-    population.mutate(mutate_function=mutate, rate=0.7)
-
+    population.mutate(mutate_function=mutate, rate=0.185)
+    #CHANGE MUTATE rate depending on fitness being up or down
     return population
 
 def roulette_selection(population):
@@ -109,9 +109,9 @@ def mutate(solution, rate):
     i = random.randrange(len(solution))
     polygon = list(solution[i])
     coords = [x for point in polygon[1:] for x in point]
-    #coords = [x + random.uniform(-1, 1) if random.random() > rate else x for x in coords]
-    coords = [x if random.random() > rate else
-              x + random.normalvariate(0,current_sigma) for x in coords]
+    coords = [x + random.uniform(-0.5, 0.5) if random.random() > rate else x for x in coords]
+    #coords = [x if random.random() > rate else
+           #   x + random.normalvariate(0,current_sigma) for x in coords]
 
 
     coords = [max(0, min(int(x), 200)) for x in coords]
