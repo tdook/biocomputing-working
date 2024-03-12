@@ -1,0 +1,5 @@
+evol
+docopt
+pillow
+matplotlib
+numpy
