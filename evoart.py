@@ -20,13 +20,13 @@ from evol import Population, Evolution
 
 
 SIDES = 3
-POLYGON_COUNT = 100
-INIT_SIGMA = 15
+POLYGON_COUNT = 200
+INIT_SIGMA = 125
 DECAY_RATE = 0.05
 CURRENT_GEN = 0
 
 MAX = 255 * 200 * 200
-TARGET = Image.open("6a.png")
+TARGET = Image.open("6b.png")
 TARGET.load()  # read image and close the file
 
 
@@ -62,7 +62,7 @@ def initialise():
 def evolve(population, args, cxp=0.5, mutp=0.5):
     population.survive(fraction=0.5)
     population.breed(parent_picker=select, combiner=combine)
-    population.mutate(mutate_function=mutate, rate=0.5)
+    population.mutate(mutate_function=mutate, rate=0.7)
 
     return population
 
@@ -85,7 +85,7 @@ def select(population):
 
 def combine(*parents):
   #print("combined")
-  return [a if random.random() < 0.5 else b for a, b in zip(*parents)]
+  return [a if random.random() < 0.7 else b for a, b in zip(*parents)]
 
 
 
@@ -96,7 +96,7 @@ def mutate(solution, rate):
   global INIT_SIGMA, DECAY_RATE, CURRENT_GEN
   solution = list(solution)
 
-  current_sigma = INIT_SIGMA / math.log(CURRENT_GEN + 2, 2)
+  current_sigma = INIT_SIGMA / math.log(CURRENT_GEN + 3, 3)
 
   #len solution < max poly count and random.rand < p:
   if random.random() < 0.3:
@@ -109,9 +109,9 @@ def mutate(solution, rate):
     i = random.randrange(len(solution))
     polygon = list(solution[i])
     coords = [x for point in polygon[1:] for x in point]
-    coords = [x + random.uniform(-1, 1) if random.random() > rate else x for x in coords]
-    #coords = [x if random.random() > rate else
-            #  x + random.normalvariate(0,current_sigma) for x in coords]
+    #coords = [x + random.uniform(-1, 1) if random.random() > rate else x for x in coords]
+    coords = [x if random.random() > rate else
+              x + random.normalvariate(0,current_sigma) for x in coords]
 
 
     coords = [max(0, min(int(x), 200)) for x in coords]
@@ -168,4 +168,4 @@ def plot_graph(generations, sigma_values):
 
 
 
-#plot_graph(generations,sigma_values)
+plot_graph(generations,sigma_values)
