@@ -123,13 +123,10 @@ def mutate(solution, rate):
       polygon = list(solution[i])
       colors = [x for color in polygon[1:] for x in color]
       colors = [x if random.random() > rate else
-                x + random.normalvariate(0,current_sigma) for x in colors]
+                x + random.normalvariate(0,10) for x in colors]
       colors = [max(0, min(int(x), 255)) for x in colors]
       polygon[1:] = list(zip(colors[::2], colors[1::2]))
       solution[i] = polygon
-
-
-  #polygon = list(solution[i])
 
 
 
@@ -142,6 +139,7 @@ def mutate(solution, rate):
 
 
   return solution
+
 
 def draw(solution):
   image = Image.new("RGB", (200, 200))
