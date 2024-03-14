@@ -104,7 +104,7 @@ def updated_std_dev(init_std_dev,generation,total_generations):
 def mutate(solution,rate):
     global INIT_SIGMA,DECAY_RATE,CURRENT_GEN
     solution = list(solution)
-
+    add_vertex = 0.000001
     current_sigma = INIT_SIGMA / math.log(CURRENT_GEN + 3,3)
 
     # len solution < max poly count and random.rand < p:
@@ -113,6 +113,11 @@ def mutate(solution,rate):
         solution.append(make_polygon(SIDES))
         return solution
     # generate new polys
+
+    # for i in range(len(solution)):
+    #     if random.random() < add_vertex:
+    #         new_vertex = (random.randrange(0,200), random.randrange(0,200))
+    #         solution[i].append(new_vertex)
 
     if random.random() < 0.5:
         # mutate points
