@@ -23,9 +23,9 @@ from PIL import Image,ImageDraw
 from evol import Population,Evolution
 
 SIDES = 3
-POLYGON_COUNT = 100
+POLYGON_COUNT = 200
 INIT_SIGMA = 120
-DECAY_RATE = 0.1
+DECAY_RATE = 0.05
 CURRENT_GEN = 0
 
 # 796 sigma 10 decay 0.1 100 poly
@@ -59,13 +59,20 @@ def make_polygon(SIDES):
 def initialise():
     return [make_polygon(SIDES) for i in range(POLYGON_COUNT)]
 
+def improving(population):
+    return population[0].fitness > population[1].fitness
 
 def evolve(population,args,cxp=0.5,mutp=0.5):
     population.survive(fraction=0.5)
     population.breed(parent_picker=select,combiner=combine)
-    population.mutate(mutate_function=mutate,rate=0.7)
+    if improving(population):
+        mutation_rate = 0.3
 
-    # CHANGE MUTATE rate depending on fitness being up or down
+    else:
+        mutation_rate = 0.7
+    population.mutate(mutate_function=mutate,rate=mutation_rate)
+
+
     return population
 
 
@@ -102,7 +109,7 @@ def updated_std_dev(init_std_dev,generation,total_generations):
 
 
 def mutate(solution,rate):
-    global INIT_SIGMA,DECAY_RATE,CURRENT_GEN
+    global INIT_SIGMA,DECAY_RATE,CURRENT_GEN, SIDES
     solution = list(solution)
     add_vertex = 0.000001
     current_sigma = INIT_SIGMA / math.log(CURRENT_GEN + 3,3)
@@ -112,7 +119,13 @@ def mutate(solution,rate):
         SIDES = random.choice([3,4,5,6])
         solution.append(make_polygon(SIDES))
         return solution
+
     # generate new polys
+    if random.random() < 0.1:
+        # Replace a random polygon with a new random shape
+        index_to_replace = random.randrange(len(solution))
+        solution[index_to_replace] = make_polygon(SIDES)
+        return solution
 
     # for i in range(len(solution)):
     #     if random.random() < add_vertex:
@@ -142,7 +155,7 @@ def mutate(solution,rate):
         polygon[1:] = list(zip(colors[::2],colors[1::2]))
         solution[i] = polygon
 
-    if random.random() < 0.3:
+    if random.random() < 0.1:
         i = random.randrange(len(solution))
         polygon = list(solution[i])
         alpha = polygon[0][3] + random.normalvariate(0,current_sigma) if random.random() > rate else polygon[0][3]
@@ -155,6 +168,8 @@ def mutate(solution,rate):
         random.shuffle(solution)
 
     return solution
+
+
 
 
 def draw(solution):
